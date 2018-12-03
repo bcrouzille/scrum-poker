@@ -1,0 +1,12 @@
+<h1>It's time to create your account ! ! !</h1>
+
+<form >
+
+  <label> Username </label><br>  <input type="text" [(ngModel)]="user.username" required name="username"><br>
+
+  <label> Email </label><br> <input type="text" [(ngModel)]="user.email" required name="email"><br>
+
+<label> Password </label><br> <input type="text" [(ngModel)]="user.password" required name="pwd"><br><br>
+
+<input type="submit" (click)="register()" content="S'enregistrer">
+</form>
