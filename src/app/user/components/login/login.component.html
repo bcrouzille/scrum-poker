@@ -1,14 +1,14 @@
 <h1>Formulaire de connexion</h1>
 
 <form>
+  <div class="form-group">
 <label>Email : </label><br><input type="text" [(ngModel)]="user.email" required name="email">
+  </div>
 <br>
 
-  <label>Password : </label><br>
-<input type="text" [(ngModel)]="user.password"  required name="pwd">
+  <label>Password : </label><br><input type="text" [(ngModel)]="user.password"  required name="pwd">
 <br><br>
-  <div *ngIf="msgError" style="color: red">{{msgError}}</div>
-
+  <div *ngIf="error" style="color: red">{{error.message}}</div>
   <input type="submit" (click)="login()" value="Login">
 </form>
 

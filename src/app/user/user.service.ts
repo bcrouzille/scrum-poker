@@ -1,22 +1,52 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {UserModel} from './models/user';
 import {environment} from '../../environments/environment';
-import {catchError} from 'rxjs/operators';
-import {throwError} from 'rxjs';
+import {catchError, switchMap, tap} from 'rxjs/operators';
+import {BehaviorSubject, throwError} from 'rxjs';
+
+export class Token {
+  id: string;
+  createdAt: string;
+  ttl: number;
+  userId: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  public connectedUser: UserModel;
+  public token: Token;
+  private _user$: BehaviorSubject<UserModel> = new BehaviorSubject<UserModel>(null);
 
-  constructor(private http: HttpClient) {
+  get user$() {
+    return this._user$;
   }
 
-  login(user: UserModel) {
-    return this.http.post(environment.apiUrl + 'users/login', user);
+  constructor(private http: HttpClient) {
+
+  }
+
+  login(userMod: UserModel) {
+    return this.http.post<Token>(environment.apiUrl + 'users/login', userMod)
+      .pipe(
+        switchMap(token => {
+         console.log(token)
+          this.token = token;
+        return this.http.get<UserModel>(environment.apiUrl + 'users/' + token.userId + '/?access_token=' + token.id);
+        }),
+        catchError(err => {
+          console.log(err)
+          if (err !== undefined) {
+          // get nested error
+          return throwError(err.error ? err.error.error : {code: 'error', message: 'error occurred'});
+          }
+        }),
+        tap(user => {
+          this._user$.next(user);
+        })
+        );
   }
 
   register(user: UserModel) {

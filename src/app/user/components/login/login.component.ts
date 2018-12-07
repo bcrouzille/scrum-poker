@@ -1,30 +1,35 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from 'src/app/user/user.service';
 import {UserModel} from '../../models/user';
+import {Router} from '@angular/router';
+import {FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.sass']
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-
+  loginForm: FormGroup;
+  loading = false;
+  submitted = false;
   public user: UserModel = new UserModel();
-  public msgError: string;
+  error: { message, code } = null;
 
-  constructor(private userService: UserService) {
-
+    constructor(private userService: UserService, private router: Router) {
+    this.user = new UserModel();
   }
 
+
   login() {
-    this.msgError = '';
-    this.userService.login(this.user).subscribe(
-      retour => {
-        console.log(retour);
+    this.userService.login(this.user)
+      .subscribe(
+        (user) => {
+        this.router.navigateByUrl('/dashboard');
       },
       (error) => {
-        console.log(error);
-        this.msgError = error.error.error.message;
+          console.log(error)
+        this.error = error;
       },
       () => {
         console.log('complete');
