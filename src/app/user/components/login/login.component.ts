@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {UserService} from 'src/app/user/user.service';
 import {UserModel} from '../../models/user';
 import {Router} from '@angular/router';
-import {FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -10,9 +9,6 @@ import {FormGroup} from '@angular/forms';
   styleUrls: ['./login.component.sass']
 })
 export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
-  loading = false;
-  submitted = false;
   public user: UserModel = new UserModel();
   error: { message, code } = null;
 

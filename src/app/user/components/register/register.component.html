@@ -1,12 +1,12 @@
-<h1>It's time to create your account ! ! !</h1>
-
-<form >
-
-  <label> Username </label><br>  <input type="text" [(ngModel)]="user.username" required name="username"><br>
-
-  <label> Email </label><br> <input type="text" [(ngModel)]="user.email" required name="email"><br>
-
-<label> Password </label><br> <input type="text" [(ngModel)]="user.password" required name="pwd"><br><br>
-
-<input type="submit" (click)="register()" content="S'enregistrer">
+<body class="text-center">
+<form class="form-signin">
+  <h1 class="h3 mb-4 font-weight-normal">Please Register</h1>
+  <label for="inputUsername" class="sr-only">Username</label>
+  <input type="text" id="inputUsername" class="form-control" placeholder="Username" [(ngModel)]="user.username"  name="username" required autofocus>
+  <label for="inputEmail" class="sr-only">Email address</label>
+  <input type="email" id="inputEmail" class="form-control" placeholder="Email address"  [(ngModel)]="user.email"  name="email" required>
+  <label for="inputPassword" class="sr-only">Password</label>
+  <input type="password" id="inputPassword" class="form-control" placeholder="Password" [(ngModel)]="user.password" name="password"  required>
+  <button class="btn btn-lg btn-primary btn-block" type="submit" (click)="register()">Register</button>
 </form>
+</body>
