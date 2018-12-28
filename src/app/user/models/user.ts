@@ -3,4 +3,5 @@ export class UserModel {
   email: string;
   password: string;
   IdUser: number;
+  token: string;
 }

@@ -37,6 +37,7 @@ export class UserService {
           return this.http.get<UserModel>(environment.apiUrl + 'users/' + token.userId + '/?access_token=' + token.id).pipe(
             map(user => {
               if (user) {
+                user.token = token.id;
                 console.log(user);
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 this._user$.next(user);
@@ -50,10 +51,10 @@ export class UserService {
             console.log(err);
             return throwError(err.error ? err.error.error : {code: 'error', message: 'error occurred'});
           }
-        })/*,
+        }),
         tap(user => {
           this._user$.next(user);
-        })*/
+        })
       );
   }
 

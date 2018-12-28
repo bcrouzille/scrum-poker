@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://scrum-server.appspot.com/api/'
+  // apiUrl: 'https://scrum-server.appspot.com/api/'
+  apiUrl: 'http://localhost:3000/api/'
 
 };
 
