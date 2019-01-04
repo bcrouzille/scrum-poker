@@ -9,18 +9,21 @@ import { UserModule } from 'src/app/user/user.module';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
 import {UserService} from './user/user.service';
+import {RoomsModule} from './rooms/rooms.module';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     PublicModule,
+    RoomsModule,
     DashboardModule,
     UserModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [
     UserService,

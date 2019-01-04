@@ -22,6 +22,14 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit() {
+  /*  this.userService.user$.subscribe(user => {
+      if (user) {
+      this.user = user;
+      console.log(this.user);
+      if (this.user.token !== undefined && this.user.token !== '') {
+        this.router.navigateByUrl('/dashboard');}
+      }
+    });*/
   }
 
 }

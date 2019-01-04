@@ -5,16 +5,21 @@ import {HomeComponent} from 'src/app/dashboard/pages/home/home.component';
 import {RegisterComponent} from './user/components/register/register.component';
 import {LoginComponent} from './user/components/login/login.component';
 import {LogoutComponent} from './user/components/logout/logout.component';
-import {CreateRoomComponent} from './dashboard/pages/create-room/create-room.component';
-import {EditRoomComponent} from './dashboard/pages/edit-room/edit-room.component';
+import {CreateRoomComponent} from './rooms/create-room/create-room.component';
+import {EditRoomComponent} from './rooms/edit-room/edit-room.component';
+import {AuthGuard} from './guards/auth.guard';
+import {UnauthGuard} from './guards/unauth.guard';
+import {OwnerGuard} from './guards/owner.guard';
+import {DetailRoomComponent} from './rooms/detail-room/detail-room.component';
 
 const routes: Routes = [
-  { path: 'dashboard', component: HomeComponent},
-  {path: 'editRoom/:idRoom', component: EditRoomComponent},
-  { path: 'createRoom', component: CreateRoomComponent},
-  { path: 'register', component: RegisterComponent},
-  { path: 'login', component: LoginComponent},
-  { path: 'logout', component: LogoutComponent}
+  { path: 'dashboard', canActivate: [AuthGuard], component: HomeComponent},
+  { path: 'detailRoom/:idRoom', canActivate: [AuthGuard], component: DetailRoomComponent},
+  { path: 'editRoom/:idRoom', canActivate: [OwnerGuard], component: EditRoomComponent},
+  { path: 'createRoom', canActivate: [AuthGuard], component: CreateRoomComponent},
+  { path: 'register', canActivate: [UnauthGuard], component: RegisterComponent},
+  { path: 'login', canActivate: [UnauthGuard], component: LoginComponent},
+  { path: 'logout', canActivate: [AuthGuard], component: LogoutComponent}
 ];
 
 @NgModule({

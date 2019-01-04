@@ -1,0 +1,52 @@
+<body >
+
+
+
+<form class="form-room">
+
+  <h3 class="h3 mb-4 font-weight-normal">Edit Room</h3>
+
+  <label for="inputName" class="sr-only">Room's name</label>
+  <input type="text" id="inputName" class="form-control" placeholder="Room's name"  [(ngModel)]="room.name" name="name" required autofocus />
+<br>
+
+  <h3 class="h3 mb-4 font-weight-normal"> Room's Items</h3>
+
+  <div class="input-group mb-3">
+    <input type="text" id="inputRoom" class="form-control" placeholder="New item name" [(ngModel)]="currentItem.name" name="item-name" >
+    <div class="input-group-append" *ngIf="currentItem.id ===undefined; else elseBlock">
+      <button class="btn btn-outline-primary" type="button" (click)="addItem()">Add Item</button>
+    </div>
+    <ng-template #elseBlock>
+    <div class="input-group-append">
+      <button class="btn btn-outline-primary" type="button" (click)="clearCurrentItem()">Edit Item</button>
+    </div>
+    </ng-template>
+
+  </div>
+
+
+  <table style="width: 100%">
+    <tr *ngFor='let item of items' class="border border-primary">
+      <td width="150px">{{item.name}}</td>
+      <td style="text-align: right">
+        <div class="btn-group" role="group">
+          <button class="btn btn-outline-primary" type="button" (click)="editItem(item)"><i class="fas fas fa-edit"></i></button>
+          <button class="btn btn-outline-danger" type="button" (click)="deleteItem(item)"><i class="fas fa-trash-alt"></i></button>
+        </div>
+      </td>
+    </tr>
+  </table>
+  <br>
+  <button class="btn btn-lg btn-danger btn-block" type="button" (click)="clearItems()">Delete all items</button>
+  <br>
+  <button class="btn btn-lg btn-primary btn-block" type="submit" (click)="updateRoom()">Save room</button>
+
+
+</form>
+
+
+
+
+
+</body>

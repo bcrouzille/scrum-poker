@@ -4,6 +4,7 @@ import {UserModel} from './models/user';
 import {environment} from '../../environments/environment';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import {BehaviorSubject, throwError} from 'rxjs';
+import {VoteModel} from '../rooms/models/vote';
 
 export class Token {
   id: string;
@@ -48,12 +49,8 @@ export class UserService {
         catchError(err => {
           if (err !== undefined) {
             // get nested error
-            console.log(err);
             return throwError(err.error ? err.error.error : {code: 'error', message: 'error occurred'});
           }
-        }),
-        tap(user => {
-          this._user$.next(user);
         })
       );
   }
@@ -74,4 +71,17 @@ export class UserService {
       this._user$.next(user);
     }
   }
+
+  isLogged(): boolean {
+    if (this.user$.getValue() !== undefined && this.user$.getValue() !== null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getUserVote() {
+    return this.http.get<VoteModel[]>(environment.apiUrl + 'users/' + this.user$.getValue().id + '/votes').pipe();
+  }
+
 }

@@ -6,6 +6,7 @@
   <tr *ngFor='let room of _roomList$' class="border border-primary">
     <td width="150px">{{room.name}}</td>
     <td>
+      <a  routerLink="/detailRoom/{{room.id}}"><i class="fas fa-vote-yea"style="margin-right: 10px"></i></a>
       <a routerLink="/editRoom/{{room.id}}"><i class="fas fa-edit" style="margin-right: 10px"></i></a>
       <a (click)="deleteRoom(room.id)" routerLink="/dashboard"><i class="fas fa-trash-alt"></i></a>
     </td>

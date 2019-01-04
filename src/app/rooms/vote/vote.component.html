@@ -1,0 +1,13 @@
+<form class="form-inline">
+  <div class="input-group">
+<select type="number" [(ngModel)]="newVote.score" name="score" class="form-control">
+    <option *ngFor="let score of voteScore" [ngValue]="score" style="padding: 0px">{{score}}</option>
+  </select>
+    <div class="input-group-append">
+  <button *ngIf="!voteId; else EditVote" type="submit" (click)="addVote()" class="btn btn-success " style="width: 50px; padding: 0px">Vote</button>
+  <ng-template #EditVote>
+    <button *ngIf="voteId && voteId !== 0; else EditVote" type="submit" (click)="editVote()" class="form-control btn btn-primary" style="width: 50px; padding:0px ">Edit</button>
+  </ng-template>
+    </div>
+  </div>
+</form>
