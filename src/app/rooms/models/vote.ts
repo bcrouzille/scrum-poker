@@ -3,7 +3,7 @@ export class VoteModel {
   id: number;
   itemsId: number;
 
-  public toString(): string{
+  public toString(): string {
     return this.score.toString();
   }
 }

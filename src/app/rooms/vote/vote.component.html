@@ -1,12 +1,13 @@
 <form class="form-inline">
   <div class="input-group">
-<select type="number" [(ngModel)]="newVote.score" name="score" class="form-control">
-    <option *ngFor="let score of voteScore" [ngValue]="score" style="padding: 0px">{{score}}</option>
+<select type="number" [(ngModel)]="newVote.score" name="score" class="form-control" title="vote">
+    <option *ngFor="let score of voteScore" [ngValue]="score" style="padding: 0">{{score}}</option>
   </select>
     <div class="input-group-append">
-  <button *ngIf="!voteId; else EditVote" type="submit" (click)="addVote()" class="btn btn-success " style="width: 50px; padding: 0px">Vote</button>
+  <button *ngIf="!newVote || newVote.id === undefined; else EditVote" type="submit" (click)="addVote()" class="btn btn-success " style="width: 50px; padding: 0">Vote</button>
   <ng-template #EditVote>
-    <button *ngIf="voteId && voteId !== 0; else EditVote" type="submit" (click)="editVote()" class="form-control btn btn-primary" style="width: 50px; padding:0px ">Edit</button>
+    <button  type="submit" (click)="editVote()" class="form-control btn btn-primary" style="width: 50px; padding:0 ">Edit</button>
+    <button  type="submit" (click)="deleteVote()" class="form-control btn btn-danger" style="width: 60px; padding:0 ">Delete</button>
   </ng-template>
     </div>
   </div>

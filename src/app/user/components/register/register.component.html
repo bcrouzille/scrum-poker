@@ -8,5 +8,8 @@
   <label for="inputPassword" class="sr-only">Password</label>
   <input type="password" id="inputPassword" class="form-control" placeholder="Password" [(ngModel)]="user.password" name="password"  required>
   <button class="btn btn-lg btn-primary btn-block" type="submit" (click)="register()">Register</button>
+  <div *ngIf="error !== ''" class="alert alert-danger" role="alert">
+    {{error}}
+  </div>
 </form>
 </body>

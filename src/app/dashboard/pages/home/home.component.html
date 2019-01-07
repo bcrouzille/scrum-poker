@@ -1,14 +1,43 @@
-<h1>
-  Vos rooms
+
+<div *ngIf="_userRoomList$.length > 0 || _otherRoomList$.length > 0; else CreateRoom">
+<div *ngIf="_userRoomList$.length > 0">
+  <h1 style="width: auto; align-items: center; display: flex; justify-content: center">
+  Your rooms
 </h1>
 
-<table style="width: 100%">
-  <tr *ngFor='let room of _roomList$' class="border border-primary">
+<table style="width: auto; align-items: center; display: flex; justify-content: center; margin-top: 20px">
+  <tr *ngFor='let room of _userRoomList$' class="border border-primary">
     <td width="150px">{{room.name}}</td>
     <td>
-      <a  routerLink="/detailRoom/{{room.id}}"><i class="fas fa-vote-yea"style="margin-right: 10px"></i></a>
+      <a  routerLink="/detailRoom/{{room.id}}"><i class="fas fa-vote-yea" style="margin-right: 10px"></i></a>
+      <a routerLink="/inviteRoom/{{room.id}}"><i class="fas fa-user-plus" style="margin-right: 10px"></i></a>
       <a routerLink="/editRoom/{{room.id}}"><i class="fas fa-edit" style="margin-right: 10px"></i></a>
-      <a (click)="deleteRoom(room.id)" routerLink="/dashboard"><i class="fas fa-trash-alt"></i></a>
+      <a (click)="deleteRoom(room.id)" routerLink="/dashboard"><i class="fas fa-trash-alt"  style="margin-right: 10px"></i></a>
     </td>
   </tr>
 </table>
+
+</div>
+
+<div *ngIf="_otherRoomList$.length > 0">
+  <div>
+  <h1>
+    Rooms you are invited
+  </h1>
+  </div>
+  <div id="otherRooms" style="margin-top: 20px">
+  <table style="width: auto; align-items: center; display: flex; justify-content: center">
+    <tr *ngFor='let room of _otherRoomList$' class="border border-primary">
+      <td width="150px">{{room.name}}</td>
+      <td>
+        <a  routerLink="/detailRoom/{{room.id}}"><i class="fas fa-vote-yea" style="margin-right: 10px"></i></a>
+      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+</div>
+
+<ng-template #CreateRoom>
+  <button class="btn btn-lg btn-success" type="button" routerLink="/createRoom">Create room</button>
+</ng-template>

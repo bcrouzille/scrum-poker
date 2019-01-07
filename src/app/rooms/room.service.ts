@@ -1,9 +1,9 @@
 import {Injectable, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, throwError} from 'rxjs';
 import {RoomModel} from './models/room';
 import {environment} from '../../environments/environment';
-import {map, switchMap} from 'rxjs/operators';
+import {catchError, map, switchMap} from 'rxjs/operators';
 import {UserModel} from '../user/models/user';
 import {ItemModel} from './models/item';
 import {UserService} from '../user/user.service';
@@ -32,6 +32,7 @@ export class RoomService implements OnInit {
   }
 
   createRoom(newRoom: RoomModel) {
+    newRoom.owner = this.currentUser.id;
     return this.http.post(environment.apiUrl + 'users/' + this._userId + '/rooms', newRoom).pipe(
     );
   }
@@ -49,9 +50,14 @@ export class RoomService implements OnInit {
     );
   }
 
+  getSimpleRoom(idRoom){
+    return this.http.get<RoomModel>(environment.apiUrl + 'rooms/' + idRoom).pipe();
+  }
+
   getRoom(idRoom) {
     return this.http.get<RoomModel>(environment.apiUrl + 'rooms/' + idRoom).pipe(
       switchMap(room => {
+        console.log(room)
           this._room$.next(room);
           return this.http.get<ItemModel[]>(environment.apiUrl + 'rooms/' + idRoom + '/items').pipe(
             map(items => this._items$.next(items)));
@@ -69,12 +75,19 @@ export class RoomService implements OnInit {
     );
   }
 
+
+
+
   addItems(items: ItemModel[], idRoom) {
     return this.http.post(environment.apiUrl + 'rooms/' + idRoom + '/items', items).pipe();
   }
 
   deleteItem(itemId) {
-    return this.http.delete(environment.apiUrl + 'items/' + itemId).pipe();
+    return this.http.delete(environment.apiUrl + 'items/' + itemId + '/votes').pipe(
+      switchMap( () => {
+        return this.http.delete(environment.apiUrl + 'items/' + itemId).pipe();
+      })
+    );
   }
 
   updateItem(item: ItemModel) {
@@ -94,17 +107,35 @@ export class RoomService implements OnInit {
     ));
   }
 
-  editVote(vote: VoteModel){
+  editVote(vote: VoteModel) {
     return this.http.patch(environment.apiUrl + 'votes/' + vote.id, vote).pipe();
+  }
+
+  deleteVote(vote: VoteModel) {
+    return this.http.delete(environment.apiUrl + 'votes/' + vote.id).pipe();
   }
 
   getVotes(idItem) {
     return this.http.get<VoteModel[]>(environment.apiUrl + 'items/' + idItem + '/votes/').pipe();
 }
 
+  usersBelongToRoom(idUser, idRoom) {
+    return this.http.get(environment.apiUrl + 'users/' + idUser + '/rooms/' + idRoom).pipe(
+      map(() => {
+        return true;
+      },
+        catchError(err => {
+          return throwError(err.error ? err.error.error : {code: 'error', message: 'error occurred'});
+        })));
+  }
+
   initialize() {
     this.userService.user$.subscribe(user => {
-      if (user) {this._userId = user.id} else {this._userId = null};
+      if (user) {
+        this._userId = user.id;
+      } else {
+        this._userId = null;
+      }
       this.currentUser = user;
       this._urlRooms$ = 'users/' + this._userId + '/rooms';
 

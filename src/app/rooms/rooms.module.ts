@@ -7,9 +7,10 @@ import {VoteComponent} from './vote/vote.component';
 import {AppRoutingModule} from '../app-routing.module';
 import {RouterModule} from '@angular/router';
 import {FormsModule} from '@angular/forms';
+import { InviteRoomComponent } from './invite-room/invite-room.component';
 
 @NgModule({
-  declarations: [DetailRoomComponent, CreateRoomComponent, EditRoomComponent, VoteComponent],
+  declarations: [DetailRoomComponent, CreateRoomComponent, EditRoomComponent, VoteComponent, InviteRoomComponent],
   imports: [
     CommonModule,
     AppRoutingModule,

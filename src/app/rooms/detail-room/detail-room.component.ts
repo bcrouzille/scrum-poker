@@ -15,7 +15,6 @@ import {UserService} from '../../user/user.service';
 export class DetailRoomComponent implements OnInit {
   public items: ItemModel[] = [];
   private room: RoomModel;
-  private votesScore: number[] = [0, 1, 3, 5, 8, 13];
   private newVote: VoteModel;
   private usersVote: VoteModel[];
 
@@ -33,12 +32,12 @@ export class DetailRoomComponent implements OnInit {
   getRoom() {
     const id = +this.route.snapshot.paramMap.get('idRoom');
     this.roomService.getRoom(id).subscribe(
-      (room) => {
+      () => {
         this.room = this.roomService._room$.getValue();
         this.items = this.roomService._items$.getValue();
         if (this.items.length > 0) {
           this.items.forEach(item => {
-            this.roomService.getVotes(item.id).subscribe(vtes => item.votes = vtes
+            this.roomService.getVotes(item.id).subscribe(vt => item.votes = vt
             );
           });
         }
@@ -64,15 +63,15 @@ export class DetailRoomComponent implements OnInit {
     );
   }
 
-  getUserVote(itemId: number): number {
+  getUserVote(itemId: number): VoteModel {
     for (let i = 0; i < this.usersVote.length; i++) {
       if (this.usersVote[i].itemsId === itemId) {
-        return this.usersVote[i].id;
+        return this.usersVote[i];
       }
     }
   }
 
-  votedCallBack(){
+  votedCallBack() {
     this.getUserVotes();
     this.getRoom();
   }

@@ -12,7 +12,7 @@
         <th>Items</th>
         <th>Votes</th>
         <th>Votes average</th>
-        <th>Actions</th>
+        <th>Your votes</th>
       </tr>
       </thead>
       <tr *ngFor='let item of items' id="{{item.id}}">
@@ -27,7 +27,7 @@
         <td>
           <app-vote *ngIf="item.votes && !alreadyVoted(item.id); else editVote" [itemId]="item.id" (voted)="votedCallBack()"></app-vote>
           <ng-template #editVote>
-            <app-vote  [itemId]="item.id" [voteId]="getUserVote(item.id)" (voted)="votedCallBack()"></app-vote>
+            <app-vote  [userVote]="getUserVote(item.id)"  [itemId]="item.id" (voted)="votedCallBack()"></app-vote>
           </ng-template>
         </td>
       </tr>

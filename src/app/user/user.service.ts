@@ -58,10 +58,18 @@ export class UserService {
   logout() {
     localStorage.removeItem('currentUser');
     this._user$.next(null);
+    return this.http.post(environment.apiUrl + 'users/logout', null);
   }
 
   register(user: UserModel) {
     return this.http.post(environment.apiUrl + 'users', user).pipe(
+      catchError(err => {
+        if (err !== undefined) {
+          // get nested error
+          console.log(err)
+          return throwError(err.error ? err.error.error : {code: 'error', message: 'error occurred'});
+        }
+      })
     );
   }
 
@@ -72,12 +80,25 @@ export class UserService {
     }
   }
 
+  getAllUsers() {
+    return this.http.get<UserModel[]>(environment.apiUrl + 'users/').pipe();
+  }
+
   isLogged(): boolean {
     if (this.user$.getValue() !== undefined && this.user$.getValue() !== null) {
       return true;
     } else {
       return false;
     }
+  }
+
+  addUserToRoom(idUser, idRoom) {
+    return this.http.put(environment.apiUrl + 'users/' + idUser + '/rooms/rel/' + idRoom, null).pipe();
+  }
+
+  deleteUserFromRoom(idUser, idRoom) {
+    console.log(idUser + ' / '  + idRoom);
+    return this.http.delete(environment.apiUrl + 'users/' + idUser + '/rooms/rel/' + idRoom).pipe();
   }
 
   getUserVote() {

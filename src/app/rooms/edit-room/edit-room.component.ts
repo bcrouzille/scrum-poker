@@ -45,8 +45,7 @@ export class EditRoomComponent implements OnInit {
 
   addItem() {
     if (this.currentItem && this.currentItem.name !== '' && this.currentItem.name !== undefined) {
-      this.currentItem.id = '';
-      console.log(this.currentItem.name);
+      this.currentItem.id = 0;
       this.items.push(this.currentItem);
       this.clearCurrentItem();
     }
@@ -84,7 +83,7 @@ export class EditRoomComponent implements OnInit {
         if (this.items) {
           const newItems: ItemModel[] = [];
           this.items.forEach(item => {
-            if (item.id === '') {
+            if (item.id === 0) {
               item.id = undefined;
               newItems.push(item);
             } else {

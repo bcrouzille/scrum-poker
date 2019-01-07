@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {UserModel} from '../../models/user';
 import {UserService} from '../../user.service';
 import {Router} from '@angular/router';
+import {catchError} from 'rxjs/operators';
 
 @Component({
   selector: 'app-register',
@@ -9,16 +10,23 @@ import {Router} from '@angular/router';
   styleUrls: ['./register.component.sass']
 })
 export class RegisterComponent implements OnInit {
-
+  private error = '';
   public user: UserModel = new UserModel();
 
   constructor(private userService: UserService, private router: Router) {
     this.user = new UserModel();
   }
   register() {
-    this.userService.register(this.user).subscribe( retour => {
+    this.userService.register(this.user)
+      .subscribe( () => {
       this.router.navigateByUrl('/login');
-    });
+    },
+      (error) => {
+      this.error = error.message;
+      },
+        () => {
+        console.log('register success');
+        });
   }
 
   ngOnInit() {

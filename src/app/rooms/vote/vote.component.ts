@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {VoteModel} from '../models/vote';
 import {RoomService} from '../room.service';
-import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-vote',
@@ -11,31 +10,39 @@ import {ActivatedRoute} from '@angular/router';
 export class VoteComponent implements OnInit {
 
   @Input() itemId: number;
-  @Input() voteId: number;
+  @Input()
+  set userVote(vote: VoteModel) {
+    if (vote) {
+    this.newVote = vote;
+    }
+  }
   @Output() voted = new EventEmitter();
   private newVote: VoteModel;
-  private voteScore: number[] = [0, 1, 3, 5, 8, 13];
+  get voteScore(): number[] { return [0, 1, 3, 5, 8, 13]; }
 
-  constructor(private roomService: RoomService, private route: ActivatedRoute) {
+  constructor(private roomService: RoomService) {
     this.newVote = new VoteModel;
     this.newVote.score = 0;
   }
 
   addVote() {
-    if (this.voteId && this.voteId !== 0) {
-      this.newVote.id = this.voteId;
-    }
     this.newVote.itemsId = this.itemId;
     this.roomService.addVote(this.newVote).subscribe(
-      vote => this.voted.emit()
+      () => this.voted.emit()
     );
   }
 
+  deleteVote() {
+  this.roomService.deleteVote(this.newVote).subscribe(
+  () => this.voted.emit()
+);
+  }
+
   editVote() {
-    this.newVote.id = this.voteId;
-    this.newVote.itemsId = this.itemId;
+  /*  this.newVote.id = this.voteId;
+    this.newVote.itemsId = this.itemId;*/
     this.roomService.editVote(this.newVote).subscribe(
-      vote => this.voted.emit()
+      () => this.voted.emit()
     );
   }
 

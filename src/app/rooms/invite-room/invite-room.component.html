@@ -1,0 +1,33 @@
+<h1 *ngIf="_room" style="width: auto; align-items: center; display: flex; justify-content: center; margin-top: 20px"> {{_room.name}}</h1>
+
+<div id="inviteUser" *ngIf="_userNotInvited.length > 0">
+<h2> Invite users to this room</h2>
+
+<table style="width: auto; align-items: center; display: flex; justify-content: center; margin-top: 20px">
+  <tr *ngFor='let user of _userNotInvited' class="border border-primary">
+    <td *ngIf="user" width="150px">
+      {{user.username}}
+    </td>
+    <td *ngIf="user">
+      <a (click)="inviteUser(user)"><i class="fas fa-user-plus"></i></a>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+<div *ngIf="_usersInvited.length > 0" id="usersRoom">
+
+<h2 style="width: auto; align-items: center; display: flex; justify-content: center; margin-top: 20px">Room's users</h2>
+
+<table style="width: auto; align-items: center; display: flex; justify-content: center; margin-top: 20px">
+  <tr *ngFor='let user of _usersInvited' class="border border-primary">
+    <td width="150px" *ngIf="user">{{user.username}}</td>
+    <td *ngIf="user">
+      <a (click)="deleteUser(user)"><i class="fas fa-user-minus"></i></a>
+    </td>
+  </tr>
+</table>
+</div>
+
+<div id="noUsers" *ngIf="_usersInvited.length == 0 && _userNotInvited.length == 0 ">It's a no man's land, there is no users in this fucking database</div>
