@@ -13,7 +13,6 @@ import {ItemModel} from '../models/item';
 export class EditRoomComponent implements OnInit {
   public room: RoomModel = new RoomModel();
   public currentItem: ItemModel = new ItemModel();
-  public items: ItemModel[] = [];
   public success = '';
 
   constructor(private roomService: RoomService, private router: Router, private route: ActivatedRoute) {
@@ -30,7 +29,6 @@ export class EditRoomComponent implements OnInit {
       (room) => {
         console.log(room);
         this.room = this.roomService._room$.getValue();
-        this.items = this.roomService._items$.getValue();
       }
     );
   }
@@ -46,7 +44,7 @@ export class EditRoomComponent implements OnInit {
   addItem() {
     if (this.currentItem && this.currentItem.name !== '' && this.currentItem.name !== undefined) {
       this.currentItem.id = 0;
-      this.items.push(this.currentItem);
+      this.room.items.push(this.currentItem);
       this.clearCurrentItem();
     }
   }
@@ -55,7 +53,7 @@ export class EditRoomComponent implements OnInit {
     if (item.id !== undefined) {
       this.roomService.deleteItem(item.id).subscribe();
     }
-    this.items.splice(this.items.indexOf(item), 1);
+    this.room.items.splice(this.room.items.indexOf(item), 1);
   }
 
   /*getItems(idRoom) {
@@ -69,7 +67,7 @@ export class EditRoomComponent implements OnInit {
   clearItems() {
     this.roomService.clearItems(this.room.id).subscribe(
       () => {
-        this.items = [];
+        this.room.items = [];
       }
     );
   }
@@ -79,10 +77,9 @@ export class EditRoomComponent implements OnInit {
     this.clearCurrentItem();
     this.roomService.updateRoom(this.room).subscribe(
       (room) => {
-        this.room = room;
-        if (this.items) {
+        if (this.room.items) {
           const newItems: ItemModel[] = [];
-          this.items.forEach(item => {
+          this.room.items.forEach(item => {
             if (item.id === 0) {
               item.id = undefined;
               newItems.push(item);

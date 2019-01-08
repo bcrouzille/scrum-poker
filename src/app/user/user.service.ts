@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {UserModel} from './models/user';
 import {environment} from '../../environments/environment';
-import {catchError, map, switchMap, tap} from 'rxjs/operators';
+import {catchError, map, switchMap} from 'rxjs/operators';
 import {BehaviorSubject, throwError} from 'rxjs';
 import {VoteModel} from '../rooms/models/vote';
 
@@ -66,7 +66,6 @@ export class UserService {
       catchError(err => {
         if (err !== undefined) {
           // get nested error
-          console.log(err)
           return throwError(err.error ? err.error.error : {code: 'error', message: 'error occurred'});
         }
       })
@@ -85,11 +84,7 @@ export class UserService {
   }
 
   isLogged(): boolean {
-    if (this.user$.getValue() !== undefined && this.user$.getValue() !== null) {
-      return true;
-    } else {
-      return false;
-    }
+    return this.user$.getValue() !== undefined && this.user$.getValue() !== null;
   }
 
   addUserToRoom(idUser, idRoom) {

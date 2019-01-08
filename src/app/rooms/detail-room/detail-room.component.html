@@ -5,7 +5,7 @@
   <div>
     <h2 class="h3 mb-4 font-weight-normal" style="text-align: center"> Room's Items</h2>
 
-    <table style="width: 100%" class="table table-striped table-bordered">
+    <table *ngIf="room && room.items" style="width: 100%" class="table table-striped table-bordered">
       <caption>List of Items</caption>
       <thead class="thead-dark">
       <tr>
@@ -15,15 +15,12 @@
         <th>Your votes</th>
       </tr>
       </thead>
-      <tr *ngFor='let item of items' id="{{item.id}}">
+      <tr *ngFor='let item of room.items' id="{{item.id}}">
         <td width="150px">{{item.name}}</td>
-        <td style="text-align: right" *ngIf="item.votes">
-          {{displayVotes(item.votes)}}
+        <td style="text-align: right" *ngIf="item.votes;else noVote">
+          <ul><li *ngFor="let vote of item.votes" style="text-align: left"> {{displayVote(vote)}}</li></ul>
         </td>
         <td *ngIf="item.votes && item.votes.length > 0; else noVote" style="text-align: center">{{voteAverage(item.votes)}}</td>
-        <ng-template #noVote>
-          <td style="text-align: center">0</td>
-        </ng-template>
         <td>
           <app-vote *ngIf="item.votes && !alreadyVoted(item.id); else editVote" [itemId]="item.id" (voted)="votedCallBack()"></app-vote>
           <ng-template #editVote>
@@ -37,6 +34,9 @@
 
 </div>
 
+<ng-template #noVote>
+  <td style="text-align: center">-</td>
+</ng-template>
 <!-- <br>
  <button class="btn btn-lg btn-danger btn-block" type="button" (click)="clearItems()">Delete all items</button>
  <br>

@@ -49,14 +49,11 @@ export class InviteRoomComponent implements OnInit {
         if (users) {
           users.forEach(u => {
             if (u.id !== this.userService.user$.getValue().id) {
-              this.roomService.usersBelongToRoom(u.id, this._room.id).subscribe(
-                (retour) => {
-                  this._usersInvited.push(u);
-                },
-                (err) => {
-                  this._userNotInvited.push(u);
-                }
-              );
+              if (this._room.users.filter(us => us.id === u.id).length === 1) {
+                this._usersInvited.push(u);
+              } else {
+                this._userNotInvited.push(u);
+              }
             }
           });
         }

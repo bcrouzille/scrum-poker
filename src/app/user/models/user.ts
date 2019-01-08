@@ -4,4 +4,5 @@ export class UserModel {
   password: string;
   id: number;
   token: string;
+  isAdmin: boolean;
 }

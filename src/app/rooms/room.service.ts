@@ -1,5 +1,5 @@
 import {Injectable, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {BehaviorSubject, throwError} from 'rxjs';
 import {RoomModel} from './models/room';
 import {environment} from '../../environments/environment';
@@ -8,6 +8,7 @@ import {UserModel} from '../user/models/user';
 import {ItemModel} from './models/item';
 import {UserService} from '../user/user.service';
 import {VoteModel} from './models/vote';
+import {QueryEncoder} from '@angular/http';
 
 @Injectable({
   providedIn: 'root'
@@ -50,18 +51,29 @@ export class RoomService implements OnInit {
     );
   }
 
-  getSimpleRoom(idRoom){
-    return this.http.get<RoomModel>(environment.apiUrl + 'rooms/' + idRoom).pipe();
+  getSimpleRoom(idRoom) {
+    const options = {params: new HttpParams().set('filter', '{"include":"users"}')};
+    return this.http.get<RoomModel>(environment.apiUrl + 'rooms/' + idRoom, options).pipe();
   }
 
   getRoom(idRoom) {
-    return this.http.get<RoomModel>(environment.apiUrl + 'rooms/' + idRoom).pipe(
-      switchMap(room => {
-        console.log(room)
+    const options = {params: new HttpParams().set('filter', '{"include":"items"}')};
+    return this.http.get<RoomModel>(environment.apiUrl + 'rooms/' + idRoom, options).pipe(
+      map(room => {
+        console.log(room);
           this._room$.next(room);
-          return this.http.get<ItemModel[]>(environment.apiUrl + 'rooms/' + idRoom + '/items').pipe(
-            map(items => this._items$.next(items)));
       }
+      ));
+  }
+
+
+  getRoomWithVotes(idRoom) {
+    const options = {params: new HttpParams().set('filter', '{"include":{"relation": "items", "scope":{"include":{"relation":"votes"}}}}')};
+    return this.http.get<RoomModel>(environment.apiUrl + 'rooms/' + idRoom, options).pipe(
+      map(room => {
+          console.log(room);
+          this._room$.next(room);
+        }
       ));
   }
 
@@ -69,14 +81,11 @@ export class RoomService implements OnInit {
     return this.http.patch<RoomModel>(environment.apiUrl + 'rooms/', room).pipe();
   }
 
-  getItems(idRoom) {
+/*  getItems(idRoom) {
     return this.http.get<ItemModel[]>(environment.apiUrl + 'rooms/' + idRoom + '/items').pipe(
       map(items => this._items$.next(items))
     );
-  }
-
-
-
+  }*/
 
   addItems(items: ItemModel[], idRoom) {
     return this.http.post(environment.apiUrl + 'rooms/' + idRoom + '/items', items).pipe();
@@ -99,6 +108,7 @@ export class RoomService implements OnInit {
   }
 
   addVote(vote: VoteModel) {
+    vote.username = this.userService.user$.getValue().username;
     return this.http.post<VoteModel>(environment.apiUrl + 'users/' + this.currentUser.id + '/votes/', vote).pipe(
       switchMap(retour => {
         console.log(retour);
@@ -126,6 +136,7 @@ export class RoomService implements OnInit {
       },
         catchError(err => {
           return throwError(err.error ? err.error.error : {code: 'error', message: 'error occurred'});
+
         })));
   }
 

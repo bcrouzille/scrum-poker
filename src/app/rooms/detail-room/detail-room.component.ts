@@ -25,28 +25,21 @@ export class DetailRoomComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getUserVotes();
     this.getRoom();
   }
 
   getRoom() {
     const id = +this.route.snapshot.paramMap.get('idRoom');
-    this.roomService.getRoom(id).subscribe(
+    this.roomService.getRoomWithVotes(id).subscribe(
       () => {
         this.room = this.roomService._room$.getValue();
-        this.items = this.roomService._items$.getValue();
-        if (this.items.length > 0) {
-          this.items.forEach(item => {
-            this.roomService.getVotes(item.id).subscribe(vt => item.votes = vt
-            );
-          });
-        }
-      }
+        this.getUserVotes();
+            }
     );
   }
 
-  displayVotes(votes) {
-    return votes.map(value => value.score).join(', ');
+  displayVote(value) {
+    return value.score + ' ' + (value.username ? '(' + value.username + ')' : '');
   }
 
   voteAverage(votes) {
@@ -56,11 +49,15 @@ export class DetailRoomComponent implements OnInit {
   }
 
   getUserVotes() {
-    this.userService.getUserVote().subscribe(
-      votes => {
-        this.usersVote = votes;
-      }
-    );
+    if (this.room && this.room.items) {
+   this.room.items.forEach(item => {
+     if (item.votes) {
+       this.usersVote.push(item.votes.filter(vote => vote.username === this.userService.user$.getValue().username)[0]);
+       console.log(this.usersVote);
+
+     }
+   });
+    }
   }
 
   getUserVote(itemId: number): VoteModel {
@@ -72,7 +69,6 @@ export class DetailRoomComponent implements OnInit {
   }
 
   votedCallBack() {
-    this.getUserVotes();
     this.getRoom();
   }
 
