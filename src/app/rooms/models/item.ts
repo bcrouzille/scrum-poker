@@ -4,4 +4,5 @@ export class ItemModel {
   name: string;
   id: number;
   votes: VoteModel[];
+  isClosed: boolean;
 }

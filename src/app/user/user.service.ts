@@ -39,7 +39,6 @@ export class UserService {
             map(user => {
               if (user) {
                 user.token = token.id;
-                console.log(user);
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 this._user$.next(user);
               }
@@ -92,7 +91,6 @@ export class UserService {
   }
 
   deleteUserFromRoom(idUser, idRoom) {
-    console.log(idUser + ' / '  + idRoom);
     return this.http.delete(environment.apiUrl + 'users/' + idUser + '/rooms/rel/' + idRoom).pipe();
   }
 

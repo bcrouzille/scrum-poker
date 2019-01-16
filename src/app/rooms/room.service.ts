@@ -60,7 +60,6 @@ export class RoomService implements OnInit {
     const options = {params: new HttpParams().set('filter', '{"include":"items"}')};
     return this.http.get<RoomModel>(environment.apiUrl + 'rooms/' + idRoom, options).pipe(
       map(room => {
-        console.log(room);
           this._room$.next(room);
       }
       ));
@@ -71,7 +70,6 @@ export class RoomService implements OnInit {
     const options = {params: new HttpParams().set('filter', '{"include":{"relation": "items", "scope":{"include":{"relation":"votes"}}}}')};
     return this.http.get<RoomModel>(environment.apiUrl + 'rooms/' + idRoom, options).pipe(
       map(room => {
-          console.log(room);
           this._room$.next(room);
         }
       ));
@@ -111,7 +109,6 @@ export class RoomService implements OnInit {
     vote.username = this.userService.user$.getValue().username;
     return this.http.post<VoteModel>(environment.apiUrl + 'users/' + this.currentUser.id + '/votes/', vote).pipe(
       switchMap(retour => {
-        console.log(retour);
         return this.http.put(environment.apiUrl + 'items/' + vote.itemsId + '/votes/rel/' + retour.id, null).pipe();
       }
     ));
@@ -139,6 +136,16 @@ export class RoomService implements OnInit {
 
         })));
   }
+
+  closeVotes(itemId, closed: boolean) {
+    return this.http.patch(environment.apiUrl + 'items/' + itemId, {'isClosed': closed}).pipe();
+  }
+
+  resetVotes(itemId) {
+    return this.http.delete(environment.apiUrl + 'items/' + itemId + '/votes').pipe(
+    );
+  }
+
 
   initialize() {
     this.userService.user$.subscribe(user => {

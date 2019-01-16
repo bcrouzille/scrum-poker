@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {RoomService} from '../room.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {RoomModel} from '../models/room';
 import {ItemModel} from '../models/item';
 import {VoteModel} from '../models/vote';
 import {UserService} from '../../user/user.service';
+import {UserModel} from '../../user/models/user';
 
 @Component({
   selector: 'app-detail-room',
@@ -17,8 +18,9 @@ export class DetailRoomComponent implements OnInit {
   private room: RoomModel;
   private newVote: VoteModel;
   private usersVote: VoteModel[];
+  private user: UserModel;
 
-  constructor(private roomService: RoomService, private route: ActivatedRoute, private userService: UserService) {
+  constructor(private roomService: RoomService, private route: ActivatedRoute, private userService: UserService, private router: Router) {
     this.newVote = new VoteModel;
     this.newVote.score = 0;
     this.usersVote = [];
@@ -26,6 +28,7 @@ export class DetailRoomComponent implements OnInit {
 
   ngOnInit() {
     this.getRoom();
+    this.user = this.userService.user$.getValue();
   }
 
   getRoom() {
@@ -50,11 +53,10 @@ export class DetailRoomComponent implements OnInit {
 
   getUserVotes() {
     if (this.room && this.room.items) {
+      this.usersVote = [];
    this.room.items.forEach(item => {
      if (item.votes) {
        this.usersVote.push(item.votes.filter(vote => vote.username === this.userService.user$.getValue().username)[0]);
-       console.log(this.usersVote);
-
      }
    });
     }
@@ -69,18 +71,35 @@ export class DetailRoomComponent implements OnInit {
   }
 
   votedCallBack() {
+    console.log('pouet voted');
     this.getRoom();
   }
 
   alreadyVoted(itemId: number): boolean {
     if (this.usersVote.length > 0) {
       for (let i = 0; i < this.usersVote.length; i++) {
-         if (this.usersVote[i].itemsId === itemId) {
+         if (this.usersVote[i] && this.usersVote[i].itemsId === itemId) {
            return true;
             }
         }
     }
     return false;
   }
+
+  closeVotes(itemId, closed: boolean) {
+this.roomService.closeVotes(itemId, closed).subscribe(
+  () => {
+    this.getRoom();
+  }
+);
+  }
+
+  resetVotes(itemId) {
+      this.roomService.resetVotes(itemId).subscribe(
+        () => {
+          this.closeVotes(itemId, false);
+        });
+    }
+
 
 }

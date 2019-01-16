@@ -27,7 +27,6 @@ export class EditRoomComponent implements OnInit {
     const id = +this.route.snapshot.paramMap.get('idRoom');
     this.roomService.getRoom(id).subscribe(
       (room) => {
-        console.log(room);
         this.room = this.roomService._room$.getValue();
       }
     );

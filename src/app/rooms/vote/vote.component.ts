@@ -9,6 +9,7 @@ import {RoomService} from '../room.service';
 })
 export class VoteComponent implements OnInit {
 
+  private isAdmin: boolean;
   @Input() itemId: number;
   @Input()
   set userVote(vote: VoteModel) {
@@ -39,14 +40,15 @@ export class VoteComponent implements OnInit {
   }
 
   editVote() {
-  /*  this.newVote.id = this.voteId;
-    this.newVote.itemsId = this.itemId;*/
     this.roomService.editVote(this.newVote).subscribe(
       () => this.voted.emit()
     );
   }
 
+
+
   ngOnInit() {
+    this.isAdmin = this.roomService.currentUser.isAdmin;
   }
 
 }

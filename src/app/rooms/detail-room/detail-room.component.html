@@ -13,20 +13,42 @@
         <th>Votes</th>
         <th>Votes average</th>
         <th>Your votes</th>
+        <th *ngIf="user && user.isAdmin">Admin actions</th>
       </tr>
       </thead>
       <tr *ngFor='let item of room.items' id="{{item.id}}">
+        <!--ITEM NAME -->
         <td width="150px">{{item.name}}</td>
+
+        <!--VOTES-->
         <td style="text-align: right" *ngIf="item.votes;else noVote">
-          <ul><li *ngFor="let vote of item.votes" style="text-align: left"> {{displayVote(vote)}}</li></ul>
+          <ul  *ngIf="user && (user.isAdmin || item.isClosed); else waitingForClosing"><li *ngFor="let vote of item.votes" style="text-align: left"> {{displayVote(vote)}}</li></ul>
+          <ng-template #waitingForClosing>Waiting for votes closure</ng-template>
         </td>
-        <td *ngIf="item.votes && item.votes.length > 0; else noVote" style="text-align: center">{{voteAverage(item.votes)}}</td>
-        <td>
-          <app-vote *ngIf="item.votes && !alreadyVoted(item.id); else editVote" [itemId]="item.id" (voted)="votedCallBack()"></app-vote>
+
+        <!--VOTES AVERAGE -->
+        <td *ngIf="(user && (user.isAdmin || item.isClosed)) && item.votes && item.votes.length > 0; else noVote" style="text-align: center">{{voteAverage(item.votes)}}</td>
+
+        <!--VOTE COMPONENT-->
+        <td *ngIf="!item.isClosed; else votesClosed" >
+          <app-vote *ngIf="item  && (!alreadyVoted(item.id) && !item.isClosed); else editVote" [itemId]="item.id" (voted)="votedCallBack()"></app-vote>
           <ng-template #editVote>
             <app-vote  [userVote]="getUserVote(item.id)"  [itemId]="item.id" (voted)="votedCallBack()"></app-vote>
+          </ng-template >
+        </td>
+
+        <ng-template #votesClosed>
+          <td> Votes closed</td>
+          </ng-template>
+
+        <!--ADMIN ACTIONS -->
+        <td *ngIf="user && user.isAdmin">
+          <button *ngIf="!item.isClosed; else reOpenVotes" type="submit" (click)="closeVotes(item.id, true)" class="form-control btn btn-primary" style="width: auto;">Close votes</button>
+          <ng-template #reOpenVotes>
+            <button  type="submit" (click)="resetVotes(item.id)" class="form-control btn btn-primary" style="width: auto;">Reset votes</button>
           </ng-template>
         </td>
+
       </tr>
     </table>
 
